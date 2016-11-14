@@ -1,5 +1,5 @@
 from nxt.motor import Motor, PORT_A, PORT_B, PORT_C
-from nxt.sensor import Light, Sound, Touch, Ultrasonic, 
+from nxt.sensor import Light, Sound, Touch, Ultrasonic 
 from nxt.sensor import PORT_1, PORT_2, PORT_3, PORT_4
 
 # use try with finally to stop motors at end, even if
@@ -13,6 +13,7 @@ motorC = Motor(brick, PORT_C) #left
 while True: 
 	dist = float(ultrasonic.get_distance())/256
 	print(dist)
+	
 	if dist < .06: #stop motors
 		motorB.run(power = 0)
 		motorC.run(power = 0)
