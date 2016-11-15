@@ -37,6 +37,7 @@ def lift_bin(touch_sensor, motor_arm):
 	motor_arm.idle()
 	stop = time()
 	total_time = stop - time[0]
+	print(total_time)
 	
 	return total_time
 	

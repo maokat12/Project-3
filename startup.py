@@ -13,9 +13,9 @@ Note 2: Use 'sudo python example.py' to use the USB connection
 Author: Michael Fruhnert, 05-Sep 2016
 '''
 
-#######################################################################
+###############################################################################
 ## First you need to connect to your NXT
-#######################################################################
+###############################################################################
 
 import nxt
 import nxtConnect # has to be in search path
@@ -35,9 +35,9 @@ else:
     
 print(brick.get_device_info()) # check what brick you connected to
 
-#######################################################################
+###############################################################################
 ## Then, you can specify what you want the NXT to do
-#######################################################################
+###############################################################################
 from time import sleep
 
 # see files in library ( /usr/local/lib/python2.7/dist-packages/nxt )

@@ -1,3 +1,29 @@
+#######################################################################
+## First you need to connect to your NXT
+#######################################################################
+
+import nxt
+import nxtConnect # has to be in search path
+
+brickName = "MINI-14"
+useUSB = False
+
+if useUSB:
+    brick = nxt.find_one_brick(
+        name = brickName,
+        strict = True,
+        method = nxt.locator.Method(usb = True, bluetooth = True))
+else:
+    # the bluetooth function of the nxt library works too, but "wastes"
+    # time searching for devices.
+    brick = nxtConnect.btConnect(brickName)
+    
+print(brick.get_device_info()) # check what brick you connected to
+
+#######################################################################
+## Then, you can specify what you want the NXT to do
+#######################################################################
+
 from nxt.motor import Motor, PORT_A, PORT_B, PORT_C
 from nxt.sensor import Light, Sound, Touch, Ultrasonic, 
 from nxt.sensor import PORT_1, PORT_2, PORT_3, PORT_4
@@ -18,8 +44,8 @@ motorC = Motor(brick, PORT_C) #left
 light.set_illuminated(TRUE)
 have_bin = TRUE #have bin true or false
 
-#USE FUNCTIIONSSSSSSSSSS
 
+#USE FUNCTIIONSSSSSSSSSS
 
 #process
 #does not have bin
