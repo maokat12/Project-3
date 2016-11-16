@@ -46,5 +46,4 @@ motorC = Motor(brick, PORT_C) #left
 ## Action
 #######################################################################
 
-time = lift_bin(motorA, touch)
-bin_type = bin_identify(time)
+print(lift_identify(motorA))
