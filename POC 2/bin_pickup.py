@@ -44,6 +44,20 @@ motorB = Motor(brick, PORT_B) #right
 motorC = Motor(brick, PORT_C) #left
 
 ###############################################################################
+## Notes
+###############################################################################
+#MotorA -> (+) - lift arm up
+#       -> (-) - lower arm
+#MotorB -> (+) - drive forward
+# 		-> (-) - drive backwards
+
+#Low Power
+#B/C foward run power = 80
+#B/C backward run power = 90
+#A lower arm power - -70
+#power2 = 69
+
+###############################################################################
 ## Action
 ###############################################################################
 
