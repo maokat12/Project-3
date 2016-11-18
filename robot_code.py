@@ -25,7 +25,7 @@ print(brick.get_device_info()) # check what brick you connected to
 #######################################################################
 
 from nxt.motor import Motor, PORT_A, PORT_B, PORT_C
-from nxt.sensor import Light, Sound, Touch, Ultrasonic, 
+from nxt.sensor import Light, Sound, Touch, Ultrasonic
 from nxt.sensor import PORT_1, PORT_2, PORT_3, PORT_4
 
 # use try with finally to stop motors at end, even if
