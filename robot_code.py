@@ -122,6 +122,3 @@ while True:
 			motorA.run(power = -50)
 		
 		has_bin = False
-
-	
-		
