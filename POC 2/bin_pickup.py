@@ -39,6 +39,7 @@ light = Light(brick, PORT_3)
 touch = Touch(brick, PORT_1)
 #compass = Compass(brick, PORT_2)
 
+#motors
 motorA = Motor(brick, PORT_A) #arm
 motorB = Motor(brick, PORT_B) #right
 motorC = Motor(brick, PORT_C) #left

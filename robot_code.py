@@ -20,10 +20,12 @@ else:
     
 print(brick.get_device_info()) # check what brick you connected to
 
-#######################################################################
-## Then, you can specify what you want the NXT to do
-#######################################################################
+###############################################################################
+## Set-Up
+###############################################################################
 
+from robot_code_methods import *
+from time import *
 from nxt.motor import Motor, PORT_A, PORT_B, PORT_C
 from nxt.sensor import Light, Sound, Touch, Ultrasonic
 from nxt.sensor import PORT_1, PORT_2, PORT_3, PORT_4
@@ -34,16 +36,24 @@ from nxt.sensor import PORT_1, PORT_2, PORT_3, PORT_4
 #sensors
 ultrasonic = Ultrasonic(brick, PORT_4)
 light = Light(brick, PORT_3)
+compass = Compass(brick, PORT_2)
 touch = Touch(brick, PORT_1)
-#compass = Compass(brick, PORT_2)
 
+#motors
 motorA = Motor(brick, PORT_A) #arm
 motorB = Motor(brick, PORT_B) #right
 motorC = Motor(brick, PORT_C) #left
 
 light.set_illuminated(TRUE)
-have_bin = TRUE #have bin true or false
+has_bin = False #have bin true or false
 
+###############################################################################
+## Notes
+###############################################################################
+#MotorA -> (+) - lift arm up
+#       -> (-) - lower arm
+#MotorB -> (+) - drive forward
+# 		-> (-) - drive backwards
 
 #USE FUNCTIIONSSSSSSSSSS
 
@@ -55,6 +65,8 @@ have_bin = TRUE #have bin true or false
 	#pick up bin
 #see where you are on line
 	#PID control	
+		#maybe not the best idea with dots/breaks in the line
+	#follow edge or follow center of line
 	#turn left/right to fix
 	#move forward x steps?
 #repeat til bin is found
@@ -62,32 +74,54 @@ have_bin = TRUE #have bin true or false
 #has bin
 #determine type of bin
 	#display in screen
-	#make noise
 		#1 pip - ceramic
 		#2 pips - metallic
 		#3 pips - organic
 #look for marker
 	#type of marker for each has to be hardcoded --> FIGURE THIS OUT
+	#could use magnets instead
 #travel to correct marker
 #identify correc place to drop bin off
 #drop bin off
 #step away from bin without knocking it over
 
+#numbers
+#0 < distance < 256 -> raw values -> fixed
+#-127 > power > 128 I think???//
 
+###############################################################################
+## Action
+###############################################################################
 	
-
 while True:
-	light_value = light.get_lightness()    #test this to see what values this returns
-	distance = ultrassonic.get_distance() / 256   #0 < distance < 256 -> raw values -> fixed
+	if has_bin is False:
+		#robot moves around and looks for a bin
+		dist = float(ultrasonic.get_distance())/256
+		while(dist > 0.029):
+			line_follow(motorB, motorC, light)
+		bin_type = lift_identify(motorA)
+		has_bin = True
+		
+	else:
+		#robot looks for correct drop off point
+		dist = float(ultrasonic.get_distance())/256
+		if bin_type == 'metallic':
+			color = 50 #number for light for color paper - blue?
+		if bin_type == 'organic':
+			color = 40 #orange?
+		if bin_type == 'ceramic':
+			color = 30 #red?
+			
+		light_val = light.get_sample()
+		
+		while light_val not color:
+			line_follow(motorB, motorC, light)
+		
+		#robot drops off bin
+		while touch.is_pressed is False:
+			motorA.run(power = -50)
+		
+		has_bin = False
+
 	
-	#PID Method -> follow edge of line, not middle
-	#figure out which side of the line following -> inside vs outside
-	if(light_value < 0.5 and light_value < 0.4): #numbers subject to change
-		motorB.run(power = 50)  #-127 > power > 128 I think???//
-		motorC.run(power = 50)  #check this^
-	elif():
 		
-		
-		
-		
-#pick up bin
