@@ -5,7 +5,7 @@
 import nxt
 import nxtConnect # has to be in search path
 
-brickName = "MINI-14"
+brickName = "T64"
 useUSB = False
 
 if useUSB:
@@ -28,6 +28,7 @@ from robot_code_methods import *
 from time import *
 from nxt.motor import Motor, PORT_A, PORT_B, PORT_C
 from nxt.sensor import Light, Sound, Touch, Ultrasonic
+from nxt.hitechnic import Compass
 from nxt.sensor import PORT_1, PORT_2, PORT_3, PORT_4
 
 # use try with finally to stop motors at end, even if
@@ -44,7 +45,7 @@ motorA = Motor(brick, PORT_A) #arm
 motorB = Motor(brick, PORT_B) #right
 motorC = Motor(brick, PORT_C) #left
 
-light.set_illuminated(TRUE)
+light.set_illuminated(True)
 has_bin = False #have bin true or false
 
 ###############################################################################
@@ -94,31 +95,42 @@ has_bin = False #have bin true or false
 ###############################################################################
 	
 while True:
-	if has_bin is False:
-		#robot moves around and looks for a bin
-		dist = float(ultrasonic.get_distance())/256
-		while(dist > 0.029):
-			line_follow(motorB, motorC, light)
-		bin_type = lift_identify(motorA)
-		has_bin = True
-		
-	else:
-		#robot looks for correct drop off point
-		dist = float(ultrasonic.get_distance())/256
-		if bin_type == 'metallic':
-			color = 50 #number for light for color paper - blue?
-		if bin_type == 'organic':
-			color = 40 #orange?
-		if bin_type == 'ceramic':
-			color = 30 #red?
-			
-		light_val = light.get_sample()
-		
-		while light_val not color:
-			line_follow(motorB, motorC, light)
-		
-		#robot drops off bin
-		while touch.is_pressed is False:
-			motorA.run(power = -50)
-		
-		has_bin = False
+    if has_bin is False:
+        dist = float(ultrasonic.get_distance())/256
+        
+        while dist > 0.06:
+            line_follow(motorB, motorC, light)
+            dist = float(ultrasonic.get_distance())/256
+        
+        while dist > 0.029:
+            motorB.run(power = 70)
+            motorC.run(power = 70)
+            dist = float(ultrasonic.get_distance())/256
+            
+        bin_type =  lift_identify(motorA)
+        print bin_type
+        has_bin = True
+    else: 
+        motorB.brake()
+        motorC.brake()
+        
+        if bin_type == 'metallic':
+            color = #blue
+        elif bin_type == 'ceramic':
+            color = #yellow
+        elif bin_type == 'organic':
+            color = #red
+            
+        #goes around loop looking for dropoff location
+        lighting = light.get_sample()
+        while (lighting > (color + 20)) and (lighting < color - 20)):
+            line_follow(motorB, motorC, light)
+            lighting = light.get_sample()
+            
+        #identify drop off location
+        initial_pos = int(motorB.get_tacho().block_tacho_count)
+        while int(motorB.get_tacho().block_tacho_count) - initial_pos <= 800:
+            
+        #turn 90 degrees
+        #walks a bit, drop off bin
+        #walks backwards to loop

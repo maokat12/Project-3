@@ -1,9 +1,11 @@
+###############################################################################
+## First you need to connect to your NXT
+###############################################################################
+
 import nxt
 import nxtConnect # has to be in search path
-from nxt.sensor import Ultrasonic, PORT_4
-from nxt.motor import Motor, PORT_A, PORT_B, PORT_C
 
-brickName = "MINI-14"
+brickName = "T64"
 useUSB = False
 
 if useUSB:
@@ -16,29 +18,51 @@ else:
     # time searching for devices.
     brick = nxtConnect.btConnect(brickName)
     
-#########################################################
+print(brick.get_device_info()) # check what brick you connected to
+
+###############################################################################
+## Set-Up
+###############################################################################
+
+from robot_code_methods import *
 import time
+from nxt.motor import Motor, PORT_A, PORT_B, PORT_C
+from nxt.sensor import Light, Sound, Touch, Ultrasonic
+from nxt.sensor.hitechnic import Compass
+from nxt.sensor import PORT_1, PORT_2, PORT_3, PORT_4
 
-#ultraSonic = Ultrasonic(brick, PORT_4) #ultrasonic sensor
-motorB = Motor(brick, PORT_C) #Right motor
-motorC = Motor(brick, PORT_B) #Left motor
+# use try with finally to stop motors at end, even if
+# program encountered a (programming) error
 
-#def ultra(sensor):
-	#return sensor.get_distance()
+#sensors
+ultrasonic = Ultrasonic(brick, PORT_4)
+light = Light(brick, PORT_3)
+compass = Compass(brick, PORT_2)
+touch = Touch(brick, PORT_1)
 
-#distance = ultra(ultraSonic)
+motorA = Motor(brick, PORT_A) #arm
+motorB = Motor(brick, PORT_B) #right
+motorC = Motor(brick, PORT_C) #left
 
-'''while(distance > 100):
-    motorR.run(power = -70)
-    motorL.run(power = -70)
-    sleep(2)
-    distance = ultra(ultraSonic)
+###############################################################################
+## Notes
+##################################################################4#############
+#MotorA -> (+) - lift arm up
+#       -> (-) - lower arm
+#MotorB -> (+) - drive forward
+# 		-> (-) - drive backwards
 
-Motor(brick, PORT_C).idle()
-Motor(brick, PORT_B).idle()'''
+#Low Power
+#B/C foward run power = 80
+#B/C backward run power = 90
+#A lower arm power - -70
+#power2 = 69
 
-while True:
-    motorB.run(power = 50)
-    motorA.run(power = 50)
-	
+#High Battery
+#power 1 = 63
+#power 2 = 66
+###############################################################################
+## Action
+###############################################################################
 
+drop_bin(motorB, motorC, motorA, touch, compass)
