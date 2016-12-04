@@ -123,16 +123,28 @@ while True:
 		#gradients of grey
         if bin_type == 'metallic':
             color = #dark grey
+			number = 1
         elif bin_type == 'ceramic':
             color = #medium grey
+			number = 2
         elif bin_type == 'organic':
             color = #light grey
+			number = 3
             
         #look for dropoff location
         lighting = light.get_sample()
         while (lighting > (color + 20)) and (lighting < color - 20)):
             line_follow(motorB, motorC, light)
             lighting = light.get_sample()
+			
+		#alternate drop off location searcher
+		drop_off_color = 425 #to be changed
+		count = 0
+		while(count < number)
+			line_follow(motorB, motorC, light)
+			lighting = light.get_sample()
+			if abs(lighting - drop_off_color) < 15:
+				count = count + 1
         
 		#drop bin off
 		drop_bin(motorB, motorC, motorA, touch, compass)
