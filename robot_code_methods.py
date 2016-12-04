@@ -10,23 +10,29 @@ from nxt.motor import Motor
 #       -> (-) - lower arm
 #MotorB -> (+) - drive forward
 # 		-> (-) - drive backwards
+#
+#motorB -> right
+#motorC -> left
+#
+#right, 1 power value lower than left
+#
 #Compass
 #       -> (N) - 0
 #       -> (E) - 90
 #       -> (S) - 180
 #       -> (W) - 270
-
+#
 #Low Power
 #power1 = 64.95
 #power2 = 69
-
+#
 #High Power 
 #power1 = 63
 #power2 = 67
-
+#
 #Bright Lighting - 350
 #Low Lighting - 300
-
+#
 ###############################################################################
 ## Action
 ###############################################################################
@@ -83,38 +89,63 @@ def line_follow(motorB, motorC, light):
                 motorC.run(power = 80)
                 time.sleep(.5)
                 break
-        #turn left til it finds a line
-        while light_val > lightness:
+		#turn left for a set distance
+		while int(motorC.get_tacho().block_tacho_count) - initial_pos <= 1600: 
             motorB.run(power = -80)
             motorC.run(power = 80)
             light_val = light.get_sample()
+            if light_val < lightness:
+                motorB.run(power = 80)
+                motorC.run(power = 80)
+                time.sleep(.5)
+                break
+		#turn turn back to original position
+        while int(motorB.get_tacho().block_tacho_count) - initial_pos <= 800: 
+            motorB.run(power = 80)
+            motorC.run(power = -80)
+            light_val = light.get_sample()
+            if light_val < lightness:
+                motorB.run(power = 80)
+                motorC.run(power = 80)
+                time.sleep(.5)
+                break
+        #turn moves forwar til it finds a line
+        while light_val > lightness:
+            motorB.run(power = 80)
+            motorC.run(power = 80)
+            light_val = light.get_sample()
 
+def fix_compass(reading)
+	if reading > 180:
+		reading = 360 - reading
+		
+	return reading
+			
 def drop_bin(motorB, motorC, motorA, touch, compass):
     
-    #turn ~90 degrees
+    #force angle to between 0 and 180
     initial_dir = compass.get_heading()
-    if initial_dir > 180:
-        intial_dir = 360 - initial_dir
+    initial_dir = fix_compass(initial_dir)
+	
     current_dir = compass.get_heading()
-    if current_dir > 180:
-        current_dir = 360 - current_dir
-        
+    current_dir = fix_compass(current_dir)
+	
+    #turn ~90 degrees    
     while current_dir - initial_dir != 90:
         motorC.run(power = -80)
         motorB.run(power = 80)
         current_dir = compass.get_heading()
-        if current_dir > 180:
-            current_dir = 360 - current_dir
+        current_dir = fix_compass(current_dir)
         
     #move forward a set amount
     initial_pos = int(motorB.get_tacho().block_tacho_count)
-    while int(motorB.get_tacho().block_tacho_count) - initial_pos <= 2000: #maybe change distance?
+    while int(motorB.get_tacho().block_tacho_count) - initial_pos <= 200: #maybe change distance?
         motorC.run(power = 80)
         motorB.run(power = 80)
         
     #set down bin
     while touch.is_pressed() is False:
-        motorA.run(power = -60)
+        motorA.run(power = -70)
        
     #move backwards a set amount    
     while abs(int(motorB.get_tacho().block_tacho_count) - initial_pos) > 5: #arbitrary number, needs testing
@@ -126,5 +157,4 @@ def drop_bin(motorB, motorC, motorA, touch, compass):
         motorC.run(power = -80)
         motorB.run(power = 80)
         current_dir = compass.get_heading()
-        if current_dir > 180:
-            current_dir = 360 - current_dir
+        current_dir = fix_compass(current_dir)

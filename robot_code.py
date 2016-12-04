@@ -98,39 +98,44 @@ while True:
     if has_bin is False:
         dist = float(ultrasonic.get_distance())/256
         
+		#follow line to find bin
         while dist > 0.06:
             line_follow(motorB, motorC, light)
             dist = float(ultrasonic.get_distance())/256
         
+		#within certain distance of bin, stop following line
+		#and drive directly towards bin
         while dist > 0.029:
             motorB.run(power = 70)
             motorC.run(power = 70)
             dist = float(ultrasonic.get_distance())/256
             
+		#identify type of bin
         bin_type =  lift_identify(motorA)
         print bin_type
+		
+		#robot now has bin
         has_bin = True
     else: 
         motorB.brake()
         motorC.brake()
         
+		#gradients of grey
         if bin_type == 'metallic':
-            color = #blue
+            color = #dark grey
         elif bin_type == 'ceramic':
-            color = #yellow
+            color = #medium grey
         elif bin_type == 'organic':
-            color = #red
+            color = #light grey
             
-        #goes around loop looking for dropoff location
+        #look for dropoff location
         lighting = light.get_sample()
         while (lighting > (color + 20)) and (lighting < color - 20)):
             line_follow(motorB, motorC, light)
             lighting = light.get_sample()
-            
-        #identify drop off location
-        initial_pos = int(motorB.get_tacho().block_tacho_count)
-        while int(motorB.get_tacho().block_tacho_count) - initial_pos <= 800:
-            
-        #turn 90 degrees
-        #walks a bit, drop off bin
-        #walks backwards to loop
+        
+		#drop bin off
+		drop_bin(motorB, motorC, motorA, touch, compass)
+		
+		#robot no longer has bin
+		has_bin = False
