@@ -89,8 +89,9 @@ def line_follow(motorB, motorC, light):
                 motorC.run(power = 80)
                 time.sleep(.5)
                 break
-		#turn left for a set distance
-		while int(motorC.get_tacho().block_tacho_count) - initial_pos <= 1600: 
+		
+	#turn left for a set distance
+	while int(motorC.get_tacho().block_tacho_count) - initial_pos <= 1600: 
             motorB.run(power = -80)
             motorC.run(power = 80)
             light_val = light.get_sample()
@@ -99,7 +100,8 @@ def line_follow(motorB, motorC, light):
                 motorC.run(power = 80)
                 time.sleep(.5)
                 break
-		#turn turn back to original position
+		
+	#turn turn back to original position
         while int(motorB.get_tacho().block_tacho_count) - initial_pos <= 800: 
             motorB.run(power = 80)
             motorC.run(power = -80)
@@ -109,6 +111,7 @@ def line_follow(motorB, motorC, light):
                 motorC.run(power = 80)
                 time.sleep(.5)
                 break
+		
         #turn moves forwar til it finds a line
         while light_val > lightness:
             motorB.run(power = 80)
