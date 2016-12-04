@@ -28,7 +28,7 @@ from robot_code_methods import *
 from time import *
 from nxt.motor import Motor, PORT_A, PORT_B, PORT_C
 from nxt.sensor import Light, Sound, Touch, Ultrasonic
-from nxt.hitechnic import Compass
+from nxt.sensor.hitechnic import Compass
 from nxt.sensor import PORT_1, PORT_2, PORT_3, PORT_4
 
 # use try with finally to stop motors at end, even if
@@ -133,14 +133,14 @@ while True:
             
         #look for dropoff location
         lighting = light.get_sample()
-        while (lighting > (color + 20)) and (lighting < color - 20)):
+        while ((lighting > (color + 20)) and (lighting < color - 20)):
             line_follow(motorB, motorC, light)
             lighting = light.get_sample()
 			
 		#alternate drop off location searcher
 		drop_off_color = 425 #to be changed
 		count = 0
-		while(count < number)
+		while(count < number):
 			line_follow(motorB, motorC, light)
 			lighting = light.get_sample()
 			if abs(lighting - drop_off_color) < 15:
